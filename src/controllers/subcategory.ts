@@ -57,3 +57,73 @@ export const getSubCategoriesByCategory = async (
     res.status(500).json({ error: "Error fetching subcategories" });
   }
 };
+
+// Get subcategory by ID
+export const getSubCategoryById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const subCategory = await prisma.subCategory.findUnique({
+      where: { id: parseInt(id) },
+    });
+    if (!subCategory) {
+      res.status(404).json({ error: "Subcategory not found" });
+      return;
+    }
+    await saveToCache(CACHE_KEYS.SUBCATEGORY(id), subCategory);
+    res.json(subCategory);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching subcategory" });
+  }
+};
+
+// Get subcategory by name
+export const getSubCategoryByName = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { name } = req.params;
+    const subCategory = await prisma.subCategory.findFirst({
+      where: { name: { equals: name, mode: "insensitive" } },
+    });
+    if (!subCategory) {
+      res.status(404).json({ error: "Subcategory not found" });
+      return;
+    }
+    await saveToCache(CACHE_KEYS.SUBCATEGORY_BY_NAME(name), subCategory);
+    res.json(subCategory);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching subcategory" });
+  }
+};
+
+// Update subcategory
+export const updateSubCategory = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+    const updatedSubCategory = await prisma.subCategory.update({
+      where: { id: parseInt(id) },
+      data,
+    });
+    await invalidateSubcategoryCache(String(updatedSubCategory.categoryId), id);
+    res.json(updatedSubCategory);
+  } catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "P2025"
+    ) {
+      res.status(404).json({ error: "Subcategory not found" });
+      return;
+    }
+    res.status(500).json({ error: "Error updating subcategory" });
+  }
+};

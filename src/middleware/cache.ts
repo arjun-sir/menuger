@@ -2,12 +2,25 @@ import { Request, Response, NextFunction } from "express";
 import redisClient from "../utils/redisClient";
 
 export const CACHE_KEYS = {
+  // Category keys
   CATEGORIES: "categories",
   CATEGORY: (id: string) => `category:${id}`,
+  CATEGORY_BY_NAME: (name: string) => `category:name:${name}`,
+
+  // Subcategory keys
   SUBCATEGORIES: "subcategories",
+  SUBCATEGORY: (id: string) => `subcategory:${id}`,
+  SUBCATEGORY_BY_NAME: (name: string) => `subcategory:name:${name}`,
   SUBCATEGORY_BY_CATEGORY: (categoryId: string) =>
     `subcategories:category:${categoryId}`,
+
+  // Item keys
   ITEMS: "items",
+  ITEM: (id: string) => `item:${id}`,
+  ITEM_BY_NAME: (name: string) => `item:name:${name}`,
+  ITEMS_BY_CATEGORY: (categoryId: string) => `items:category:${categoryId}`,
+  ITEMS_BY_SUBCATEGORY: (subcategoryId: string) =>
+    `items:subcategory:${subcategoryId}`,
   ITEMS_SEARCH: (query: string) => `items:search:${query}`,
 };
 
@@ -42,24 +55,41 @@ export const invalidateCategoryCache = async (categoryId?: string) => {
   const keys = [CACHE_KEYS.CATEGORIES];
   if (categoryId) {
     keys.push(CACHE_KEYS.CATEGORY(categoryId));
-    // Also invalidate related subcategories cache
+    keys.push(CACHE_KEYS.ITEMS_BY_CATEGORY(categoryId));
     keys.push(CACHE_KEYS.SUBCATEGORY_BY_CATEGORY(categoryId));
   }
   await invalidateCache(...keys);
 };
 
-export const invalidateSubcategoryCache = async (categoryId?: string) => {
+export const invalidateSubcategoryCache = async (
+  categoryId?: string,
+  subcategoryId?: string
+) => {
   const keys = [CACHE_KEYS.SUBCATEGORIES];
   if (categoryId) {
     keys.push(CACHE_KEYS.SUBCATEGORY_BY_CATEGORY(categoryId));
   }
+  if (subcategoryId) {
+    keys.push(CACHE_KEYS.SUBCATEGORY(subcategoryId));
+    keys.push(CACHE_KEYS.ITEMS_BY_SUBCATEGORY(subcategoryId));
+  }
   await invalidateCache(...keys);
 };
 
-export const invalidateItemsCache = async (searchQuery?: string) => {
+export const invalidateItemsCache = async (
+  searchQuery?: string,
+  categoryId?: string,
+  subcategoryId?: string
+) => {
   const keys = [CACHE_KEYS.ITEMS];
   if (searchQuery) {
     keys.push(CACHE_KEYS.ITEMS_SEARCH(searchQuery));
+  }
+  if (categoryId) {
+    keys.push(CACHE_KEYS.ITEMS_BY_CATEGORY(categoryId));
+  }
+  if (subcategoryId) {
+    keys.push(CACHE_KEYS.ITEMS_BY_SUBCATEGORY(subcategoryId));
   }
   await invalidateCache(...keys);
 };

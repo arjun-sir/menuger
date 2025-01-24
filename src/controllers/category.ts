@@ -7,7 +7,10 @@ import {
 } from "../middleware/cache";
 
 // Create a new category
-export const createCategory = async (req: Request, res: Response) => {
+export const createCategory = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { name, image, description, taxApplicable, tax, taxType } = req.body;
     const category = await prisma.category.create({
@@ -49,6 +52,27 @@ export const getCategoryById = async (
       return;
     }
     await saveToCache(CACHE_KEYS.CATEGORY(id), category);
+    res.json(category);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching category" });
+  }
+};
+
+// Get a category by name
+export const getCategoryByName = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { name } = req.params;
+    const category = await prisma.category.findFirst({
+      where: { name: { equals: name, mode: "insensitive" } },
+    });
+    if (!category) {
+      res.status(404).json({ error: "Category not found" });
+      return;
+    }
+    await saveToCache(CACHE_KEYS.CATEGORY(String(category.id)), category);
     res.json(category);
   } catch (error) {
     res.status(500).json({ error: "Error fetching category" });
@@ -103,6 +127,6 @@ export const deleteCategory = async (
       res.status(404).json({ error: "Category not found" });
       return;
     }
-    res.status(500).json({ error: "Error updating category" });
+    res.status(500).json({ error: "Error deleting category" });
   }
 };
