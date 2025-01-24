@@ -1,8 +1,16 @@
 import { Request, Response } from "express";
 import prisma from "../prisma/client";
+import {
+  saveToCache,
+  invalidateItemsCache,
+  CACHE_KEYS,
+} from "../middleware/cache";
 
 // Create an item
-export const createItem = async (req: Request, res: Response) => {
+export const createItem = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const {
       name,
@@ -30,6 +38,7 @@ export const createItem = async (req: Request, res: Response) => {
         categoryId,
       },
     });
+    await invalidateItemsCache();
     res.status(201).json(item);
   } catch (error) {
     res.status(500).json({ error: "Error creating item" });
@@ -37,12 +46,16 @@ export const createItem = async (req: Request, res: Response) => {
 };
 
 // Search items by name
-export const searchItemsByName = async (req: Request, res: Response) => {
+export const searchItemsByName = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { name } = req.query;
     const items = await prisma.item.findMany({
       where: { name: { contains: String(name), mode: "insensitive" } },
     });
+    await saveToCache(CACHE_KEYS.ITEMS_SEARCH(String(name)), items);
     res.json(items);
   } catch (error) {
     res.status(500).json({ error: "Error searching items" });
