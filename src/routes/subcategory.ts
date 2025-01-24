@@ -8,6 +8,7 @@ import {
   updateSubCategory,
 } from "../controllers/subcategory";
 import { cacheMiddleware, CACHE_KEYS } from "../middleware/cache";
+import { upload } from "../utils/multerConfig";
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ interface ParamsDictionary {
 }
 
 // Create and List routes
-router.post("/", createSubCategory);
+router.post("/", upload.single("image"), createSubCategory);
 router.get(
   "/",
   cacheMiddleware(() => CACHE_KEYS.SUBCATEGORIES),
@@ -54,6 +55,6 @@ router.get(
 );
 
 // Update route
-router.put("/:id", updateSubCategory);
+router.put("/:id", upload.single("image"), updateSubCategory);
 
 export default router;

@@ -12,8 +12,9 @@ export const createSubCategory = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { name, image, description, taxApplicable, tax, categoryId } =
-      req.body;
+    const { name, description, taxApplicable, tax, categoryId } = req.body;
+    const image = req.file ? (req.file as any).location : null;
+
     const subCategory = await prisma.subCategory.create({
       data: { name, image, description, taxApplicable, tax, categoryId },
     });
@@ -107,7 +108,10 @@ export const updateSubCategory = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const data = req.body;
+    const data = { ...req.body };
+    if (req.file) {
+      data.image = (req.file as any).location;
+    }
     const updatedSubCategory = await prisma.subCategory.update({
       where: { id: parseInt(id) },
       data,

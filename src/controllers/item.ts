@@ -14,7 +14,6 @@ export const createItem = async (
   try {
     const {
       name,
-      image,
       description,
       taxApplicable,
       tax,
@@ -23,7 +22,9 @@ export const createItem = async (
       subCategoryId,
       categoryId,
     } = req.body;
+    const image = req.file ? (req.file as any).location : null;
     const totalAmount = baseAmount - (discount || 0);
+
     const item = await prisma.item.create({
       data: {
         name,
@@ -160,7 +161,10 @@ export const updateItem = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const data = req.body;
+    const data = { ...req.body };
+    if (req.file) {
+      data.image = (req.file as any).location;
+    }
     if (data.baseAmount && data.discount !== undefined) {
       data.totalAmount = data.baseAmount - (data.discount || 0);
     }

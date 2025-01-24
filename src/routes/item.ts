@@ -10,6 +10,7 @@ import {
   updateItem,
 } from "../controllers/item";
 import { cacheMiddleware, CACHE_KEYS } from "../middleware/cache";
+import { upload } from "../utils/multerConfig";
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ interface ParamsDictionary {
 }
 
 // Create and List routes
-router.post("/", createItem);
+router.post("/", upload.single("image"), createItem);
 router.get(
   "/",
   cacheMiddleware(() => CACHE_KEYS.ITEMS),
@@ -66,6 +67,6 @@ router.get(
 );
 
 // Update route
-router.put("/:id", updateItem);
+router.put("/:id", upload.single("image"), updateItem);
 
 export default router;

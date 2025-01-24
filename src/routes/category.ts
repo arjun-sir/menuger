@@ -8,6 +8,7 @@ import {
   deleteCategory,
 } from "../controllers/category";
 import { cacheMiddleware, CACHE_KEYS } from "../middleware/cache";
+import { upload } from "../utils/multerConfig";
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ interface ParamsDictionary {
 }
 
 // Create and List routes
-router.post("/", createCategory);
+router.post("/", upload.single("image"), createCategory);
 router.get(
   "/",
   cacheMiddleware(() => CACHE_KEYS.CATEGORIES),
@@ -43,7 +44,7 @@ router.get("/:param", (req: Request<ParamsDictionary>, res, next) => {
 });
 
 // Update and Delete routes
-router.put("/:id", updateCategory);
+router.put("/:id", upload.single("image"), updateCategory);
 router.delete("/:id", deleteCategory);
 
 export default router;
