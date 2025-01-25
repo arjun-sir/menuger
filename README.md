@@ -112,17 +112,48 @@ The application will be available at http://localhost:3000
   }
   ```
 
-- **GET** `/api/categories`
-- **GET** `/api/categories/:param` (ID or name)
-- **PUT** `/api/categories/:id`
-- **DELETE** `/api/categories/:id`
+- **GET** `/api/categories` - List all categories
+- **GET** `/api/categories/:param` - Get category by ID or name
+- **PUT** `/api/categories/:id` - Update category
+- **DELETE** `/api/categories/:id` - Delete category
+
+### Subcategories
+
+- **POST** `/api/subcategories`
+  ```json
+  {
+    "name": "Pizzas",
+    "description": "Italian pizzas",
+    "image": "(file upload)",
+    "categoryId": 1
+  }
+  ```
+
+- **GET** `/api/subcategories` - List all subcategories
+- **GET** `/api/subcategories/:param` - Get subcategory by ID or name
+- **GET** `/api/subcategories/category/:categoryId` - Get subcategories by category
+- **PUT** `/api/subcategories/:id` - Update subcategory
 
 ### Items
 
 - **POST** `/api/items`
-- **GET** `/api/items/search?name=query`
-- **GET** `/api/items/category/:categoryId`
-- **GET** `/api/items/:param` (ID or name)
+  ```json
+  {
+    "name": "Margherita Pizza",
+    "description": "Classic Italian pizza",
+    "image": "(file upload)",
+    "price": 12.99,
+    "categoryId": 1,
+    "subcategoryId": 1
+  }
+  ```
+
+- **GET** `/api/items` - List all items
+- **GET** `/api/items/:param` - Get item by ID or name
+- **GET** `/api/items/category/:categoryId` - Get items by category
+- **GET** `/api/items/subcategory/:subcategoryId` - Get items by subcategory
+- **GET** `/api/items/search?name=query` - Search items by name
+- **PUT** `/api/items/:id` - Update item
 
 ## 🤔 Assignment Questions
 
@@ -137,18 +168,17 @@ I chose PostgreSQL for this project because:
 ### Three Key Learnings
 1. **Redis Integration**: Implementing efficient caching strategies for optimizing API response times and reducing database load.
 2. **AWS S3 File Management**: Handling file uploads securely with pre-signed URLs and proper error handling.
-3. **TypeScript Best Practices**: Using advanced TypeScript features for better type safety and code maintainability.
+3. **Rate Limiting**: Implementing rate limiting to protect the API from abuse and ensure fair usage.
 
 ### Most Challenging Aspect
 The most challenging part was implementing an efficient caching strategy that properly invalidates related caches across the menu hierarchy. For example, when updating a category, we needed to invalidate not just the category cache but also related subcategories and items caches.
 
 ### Future Improvements
 Given more time, I would:
-1. Implement WebSocket support for real-time menu updates
-2. Add comprehensive unit and integration tests
-3. Create a CI/CD pipeline with automated testing and deployment
-4. Add GraphQL support for more flexible data querying
-5. Implement image optimization and CDN integration
+1. Add comprehensive unit and integration tests
+2. Create a CI/CD pipeline with automated testing and deployment
+3. Add GraphQL support for more flexible data querying
+4. Implement image optimization and CDN integration
 
 ## 📄 License
 
