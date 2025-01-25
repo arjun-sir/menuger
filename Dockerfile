@@ -11,7 +11,7 @@ RUN apk add --no-cache python3 make g++ libc6-compat
 COPY package*.json ./
 
 # Install dependencies with legacy peer deps flag
-RUN npm ci --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
 # Copy prisma schema
 COPY prisma ./prisma/
@@ -35,7 +35,7 @@ RUN apk add --no-cache libc6-compat
 
 # Install production dependencies
 COPY package*.json ./
-RUN npm ci --only=production --legacy-peer-deps
+RUN npm install --only=production --legacy-peer-deps
 
 # Copy prisma files and generate client
 COPY prisma ./prisma/
