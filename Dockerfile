@@ -44,15 +44,7 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 # Copy built assets
 COPY --from=builder /app/dist ./dist
 
-# Add startup script
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
 # Expose the port
 EXPOSE 3000
 
-# Set entrypoint
-ENTRYPOINT ["docker-entrypoint.sh"]
-
-# Start the server
-CMD ["npm", "start"]
+CMD npx prisma generate && npx prisma db push --accept-data-loss && npm start
