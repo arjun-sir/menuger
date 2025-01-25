@@ -16,7 +16,14 @@ export const createSubCategory = async (
     const image = req.file ? (req.file as any).location : null;
 
     const subCategory = await prisma.subCategory.create({
-      data: { name, image, description, taxApplicable, tax, categoryId },
+      data: {
+        name,
+        image,
+        description,
+        taxApplicable,
+        tax,
+        categoryId: Number(categoryId),
+      },
     });
     await invalidateSubcategoryCache(String(categoryId));
     res.status(201).json(subCategory);

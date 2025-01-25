@@ -101,7 +101,7 @@ The application will be available at http://localhost:3000
 
 ### Categories
 
-- **POST** `/api/categories`
+- **POST** `/api/category`
   ```json
   {
     "name": "Main Course",
@@ -112,14 +112,14 @@ The application will be available at http://localhost:3000
   }
   ```
 
-- **GET** `/api/categories` - List all categories
-- **GET** `/api/categories/:param` - Get category by ID or name
-- **PUT** `/api/categories/:id` - Update category
-- **DELETE** `/api/categories/:id` - Delete category
+- **GET** `/api/category` - List all categories
+- **GET** `/api/category/:param` - Get category by ID or name
+- **PUT** `/api/category/:id` - Update category
+- **DELETE** `/api/category/:id` - Delete category
 
 ### Subcategories
 
-- **POST** `/api/subcategories`
+- **POST** `/api/subcategory`
   ```json
   {
     "name": "Pizzas",
@@ -129,14 +129,14 @@ The application will be available at http://localhost:3000
   }
   ```
 
-- **GET** `/api/subcategories` - List all subcategories
-- **GET** `/api/subcategories/:param` - Get subcategory by ID or name
-- **GET** `/api/subcategories/category/:categoryId` - Get subcategories by category
-- **PUT** `/api/subcategories/:id` - Update subcategory
+- **GET** `/api/subcategory` - List all subcategories
+- **GET** `/api/subcategory/:param` - Get subcategory by ID or name
+- **GET** `/api/subcategory/category/:categoryId` - Get subcategories by category
+- **PUT** `/api/subcategory/:id` - Update subcategory
 
 ### Items
 
-- **POST** `/api/items`
+- **POST** `/api/item`
   ```json
   {
     "name": "Margherita Pizza",
@@ -148,12 +148,12 @@ The application will be available at http://localhost:3000
   }
   ```
 
-- **GET** `/api/items` - List all items
-- **GET** `/api/items/:param` - Get item by ID or name
-- **GET** `/api/items/category/:categoryId` - Get items by category
-- **GET** `/api/items/subcategory/:subcategoryId` - Get items by subcategory
-- **GET** `/api/items/search?name=query` - Search items by name
-- **PUT** `/api/items/:id` - Update item
+- **GET** `/api/item` - List all items
+- **GET** `/api/item/:param` - Get item by ID or name
+- **GET** `/api/item/category/:categoryId` - Get items by category
+- **GET** `/api/item/subcategory/:subcategoryId` - Get items by subcategory
+- **GET** `/api/item/search?name=query` - Search items by name
+- **PUT** `/api/item/:id` - Update item
 
 ## 🤔 Assignment Questions
 
